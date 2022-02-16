@@ -3,12 +3,12 @@ from sklearn.base import TransformerMixin
 import numpy as np
 
 class OutliersIQRHandler(BaseEstimator, TransformerMixin):
-    def __init__(self, replace_strategy: str = "median") -> None:
+    def __init__(self, strategy: str = "median") -> None:
         """
         params:
             replace_value (str): 'median' or 'mean'
         """
-        self.replace_strategy = replace_strategy
+        self.replace_strategy = strategy
         self.replacing_strategies = {
             "median": np.median,
             "mean": np.mean
@@ -20,7 +20,7 @@ class OutliersIQRHandler(BaseEstimator, TransformerMixin):
         return self
     
     def transform(self, X: np.array) -> np.array:
-        '''
+        """
         Detects ourliers using IQR
         IQR = Q3 - Q1
         lower_bound = Q3 + IQR * 1.5
@@ -31,7 +31,7 @@ class OutliersIQRHandler(BaseEstimator, TransformerMixin):
 
         returns:
             (np.array) processed data with the specified startegy
-        '''
+        """
 
         Q1, Q3 =  np.quantile(X, 0.25), np.quantile(X, 0.75)
         IQR = Q3 - Q1        
