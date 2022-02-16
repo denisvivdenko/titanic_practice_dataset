@@ -17,19 +17,20 @@ data = pd.read_csv("train.csv")
 age_feature_pipeline = Pipeline([
     ("missing_values", SimpleImputer(strategy="median")),
     ("outliers_handler", OutliersIQRHandler(strategy="median")),
-    ("discretizer", BinEncoder(bins=[5, 12, 18, 25, 45, 60, 80]))
+    ("discretizer", BinEncoder(bins=[5, 12, 18, 25, 45, 60, 80])),
+    ("onehot_encoding", OneHotEncoder(handle_unknown="ignore"))
 ])
 
 ticket_feature_pipeline = Pipeline([
     ("missing_values", SimpleImputer(strategy="most_frequent")),
     ("alphabetic_code_extractor", extract_alphabetic_code_by_split),
-    ("onehot_encoding", OneHotEncoder())
+    ("onehot_encoding", OneHotEncoder(handle_unknown="ignore"))
 ])
 
 cabin_feature_pipeline = Pipeline([
     ("missing_values", SimpleImputer(strategy="most_frequent")),
     ("alphabetic_code_extractor", extract_alphabetic_code),
-    ("onehot_encoding", OneHotEncoder())
+    ("onehot_encoding", OneHotEncoder(handle_unknown="ignore"))
 ])
 
 fare_feature_pipeline = Pipeline([
@@ -39,7 +40,7 @@ fare_feature_pipeline = Pipeline([
 
 categorical_features_pipeline = Pipeline([
     ("missing_values", SimpleImputer(strategy="most_frequent")),
-    ("onehot_encoding", OneHotEncoder())
+    ("onehot_encoding", OneHotEncoder(handle_unknown="ignore"))
 ])
 
 numerical_discrete_features_pipeline = Pipeline([
