@@ -29,6 +29,11 @@ class BinEncoder(BaseEstimator, TransformerMixin):
 
 
 if __name__ == "__main__":
-    bin_encoder = BinEncoder(bins=[25, 50, 75, 100])
-    X = np.arange(0, 120, dtype=int)
+    bin_encoder = BinEncoder(bins=[2, 5, 7, 10])
+    X = np.arange(0, 15, dtype=int)
     print(X, bin_encoder.fit_transform(X))
+
+"""
+input: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14] 
+output: [0 0 0 1 1 1 2 2 3 3 3 4 4 4 4]
+"""
