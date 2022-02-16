@@ -3,12 +3,14 @@ from sklearn.base import TransformerMixin
 import numpy as np
 
 class OutliersIQRHandler(BaseEstimator, TransformerMixin):
+    strategy = "median"
+
     def __init__(self, strategy: str = "median") -> None:
         """
         params:
             replace_value (str): 'median' or 'mean'
         """
-        self.replace_strategy = strategy
+        self.strategy = strategy
         self.replacing_strategies = {
             "median": np.median,
             "mean": np.mean
@@ -16,7 +18,7 @@ class OutliersIQRHandler(BaseEstimator, TransformerMixin):
         self.replacing_value = None
     
     def fit(self, X: np.array, y=None):
-        self.replacing_value = self.replacing_strategies[self.replace_strategy](X)
+        self.replacing_value = self.replacing_strategies[self.strategy](X)
         return self
     
     def transform(self, X: np.array) -> np.array:
