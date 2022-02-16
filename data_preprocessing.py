@@ -1,11 +1,9 @@
 import pandas as pd
 import numpy as np
+from sklearn.compose import ColumnTransformer
 
 from sklearn.impute import SimpleImputer
-
-from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import FunctionTransformer
 
 from outliers_handler import OutliersIQRHandler
 from bin_encoder import BinEncoder
@@ -31,8 +29,28 @@ cabin_feature_pipeline = Pipeline([
     ("alphabetic_code_extractor", extract_alphabetic_code)
 ])
 
+fare_feature_pipeline = Pipeline([
+    ("missing_values", SimpleImputer(strategy="median")),
+    ("outliers_handler", OutliersIQRHandler(strategy="median"))
+])
+
+categorical_features_pipeline = Pipeline([
+    ("missing_values", SimpleImputer(strategy="most_frequent"))
+])
+
+numerical_discrete_features_pipeline = Pipeline([
+    ("missing_values", SimpleImputer(strategy="median"))
+])
+
+pipeline = ColumnTransformer([
+    ("age_feature", age_feature_pipeline, ["Age"]),
+    ("ticket_feature", ticket_feature_pipeline, ["Ticket"]),
+    ("cabin_feature", cabin_feature_pipeline, ["Cabin"]),
+    ("fare_feature", fare_feature_pipeline, ["Fare"]),
+    ("categorical_features", categorical_features_pipeline, ["Sex", "Embarked"]),
+    ("numerical_discrete_features", numerical_discrete_features_pipeline, ["SibSp", "Pclass", "Parch"])
+])
 
 if __name__ == "__main__":
-    print(age_feature_pipeline.fit_transform([data["Age"].values]))
-    print(ticket_feature_pipeline.fit_transform([data["Ticket"].values]))
-    print(cabin_feature_pipeline.fit_transform([data["Cabin"].values]))
+    print(pd.DataFrame(pipeline.fit_transform(data), index=data.PassengerId,
+                columns=["Age", "Ticket", "Cabin", "Fare", "Sex", "Embarked", "SibSp", "Pclass", "Parch"]))
